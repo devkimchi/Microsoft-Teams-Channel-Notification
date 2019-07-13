@@ -1,0 +1,48 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.0",
+  "speak": "Website Published to Netlify",
+  "body": [
+    {
+      "type": "ColumnSet",
+      "columns": [
+        {
+          "type": "Column",
+          "items": [
+            {
+              "type": "Image",
+              "style": "default",
+              "url": "https://raw.githubusercontent.com/devkimchi/Microsoft-Teams-Channel-Notification/master/images/published.png",
+              "size": "small"
+            }
+          ],
+          "width": "auto"
+        },
+        {
+          "type": "Column",
+          "items": [
+            {
+              "type": "TextBlock",
+              "weight": "bolder",
+              "text": "Published: @{triggerBody().name}",
+              "wrap": true
+            },
+            {
+              "type": "TextBlock",
+              "text": "[@{triggerBody().url}](@{triggerBody().url})",
+              "wrap": true
+            },
+            {
+              "type": "TextBlock",
+              "text": "@{triggerBody().published_at}",
+              "wrap": true,
+              "isSubtle": true
+            }
+          ],
+          "width": "stretch"
+        }
+      ]
+    }
+  ]
+}
