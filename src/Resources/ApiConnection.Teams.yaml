@@ -22,7 +22,7 @@ variables:
   apiConnection:
     name: "[parameters('name')]"
     apiVersion: "[providers('Microsoft.Web', 'connections').apiVersions[0]]"
-    location: "[variables('location')]"
+    location: "[parameters('location')]"
     resourceId: "[resourceId('Microsoft.Web/connections', parameters('name'))]"
     connectionType: "[parameters('apiConnectionType')]"
 
