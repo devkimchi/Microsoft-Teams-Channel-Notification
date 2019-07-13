@@ -1,0 +1,67 @@
+parameters:
+  $connections:
+    value:
+      teams:
+        id: "{{TeamsApiConnectorId}}"
+        connectionId: "{{TeamsApiConnectionId}}"
+        connectionName: "{{TeamsApiConnectionName}}"
+  teams:
+    value:
+      groupId: "{{TeamsGroupId}}"
+      channelId: "{{TeamsChannelId}}"
+      messageBody: "{{TeamsMessageBody}}"
+
+definition:
+  $schema: "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#"
+  contentVersion: "1.0.0.0"
+
+  parameters:
+    $connections:
+      type: object
+      defaultValue: {}
+    teams:
+      type: object
+      defaultValue: {}
+
+  triggers:
+    manual:
+      type: Request
+      kind: Http
+      inputs:
+        method: POST
+        schema: {}
+
+  actions:
+    ChannelWebhook_with_MessageCard:
+      type: Http
+      runAfter: {}
+      inputs:
+        method: POST
+        uri: "@parameters('teams').channel.endpoint"
+        body:
+          "@@type": MessageCard
+          "@@context": http://schema.org/extensions
+          summary: Website Published to Netlify
+          sections:
+          - activityImage: "https://raw.githubusercontent.com/devkimchi/Microsoft-Teams-Channel-Notification/master/images/published.png"
+            activityTitle: "Published: @{triggerBody()['name']}"
+            activitySubtitle: "[[@{triggerBody()['url']}](@{triggerBody()['url']})"
+            activityText: "@{triggerBody()['published_at']}"
+
+    FlowBot_with_AdaptiveCard:
+      type: ApiConnection
+      runAfter: {}
+      inputs:
+        method: POST
+        host:
+          connection:
+            name: "@parameters('$connections').teams.connectionId"
+        path: "/flowbot/actions/adaptivecard/recipienttypes/channel"
+        queries:
+          groupId: "@parameters('teams').groupId"
+        body:
+          recipient:
+            channelId: "@parameters('teams').channelId"
+          messageBody: "@parameters('teams').messageBody"
+
+  outputs: {}

@@ -1,0 +1,37 @@
+$schema: https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#
+contentVersion: 1.0.0.0
+parameters:
+  name:
+    type: string
+    metadata:
+      description: Name of the Logic App.
+  location:
+    type: string
+    metadata:
+      description: Location of the Logic App.
+    defaultValue: "[resourceGroup().location]"
+
+variables:
+  logicApp:
+    name: "[parameters('name')]"
+    apiVersion: "[providers('Microsoft.Logic', 'workflows').apiVersions[0]]"
+    location: "[parameters('location')]"
+
+resources:
+- comments: "### RESOURCE: LOGIC APP ###"
+  apiVersion: "[variables('logicApp').apiVersion]"
+  type: Microsoft.Logic/workflows
+  name: "[variables('logicApp').name]"
+  location: "[variables('logicApp').location]"
+  tags: {}
+  properties:
+    parameters: {}
+    definition:
+      $schema: https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#
+      contentVersion: 1.0.0.0
+      parameters: {}
+      triggers: {}
+      actions: {}
+      outputs: {}
+
+outputs: {}
