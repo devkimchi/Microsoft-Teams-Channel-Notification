@@ -1,0 +1,41 @@
+$schema: https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#
+contentVersion: 1.0.0.0
+parameters:
+  name:
+    type: string
+    metadata:
+      description: Name of the API connection.
+  location:
+    type: string
+    metadata:
+      description: Location of the API connection.
+    defaultValue: "[resourceGroup().location]"
+  apiConnectionType:
+    type: string
+    metadata:
+      description: Type of the API connection.
+    allowedValues:
+    - teams
+    defaultValue: teams
+
+variables:
+  apiConnection:
+    name: "[parameters('name')]"
+    apiVersion: "[providers('Microsoft.Web', 'connections').apiVersions[0]]"
+    location: "[variables('location')]"
+    resourceId: "[resourceId('Microsoft.Web/connections', parameters('name'))]"
+    connectionType: "[parameters('apiConnectionType')]"
+
+resources:
+- comments: "### RESOURCE: API CONNECTION - TEAMS ###"
+  apiVersion: "[variables('apiConnection').apiVersion]"
+  type: Microsoft.Web/connections
+  name: "[variables('apiConnection').name]"
+  location: "[variables('apiConnection').location]"
+  tags: {}
+  properties:
+    api:
+      id: "[concat(subscription().id, '/providers/Microsoft.Web/locations/', variables('apiConnection').location, '/managedApis/', variables('apiConnection').connectionType)]"
+    displayName: "[variables('apiConnection').name]"
+
+outputs: {}
